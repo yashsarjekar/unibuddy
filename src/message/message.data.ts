@@ -89,7 +89,14 @@ export class MessageData {
 
   async delete(messageId: ObjectID): Promise<ChatMessage> {
     // TODO allow a message to be marked as deleted
-    return new ChatMessage() // Minimum to pass ts checks -replace this
+    const message = await this.chatMessageModel.findByIdAndUpdate(
+      messageId,
+      { deleted: true },
+      { new: true },
+    );
+
+    if (!message) throw new Error('Message not found');
+    return chatMessageToObject(message);
   }
 
   async resolve(messageId: ObjectID): Promise<ChatMessage> {
